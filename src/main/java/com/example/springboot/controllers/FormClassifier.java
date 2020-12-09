@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class FormClassifier {
     @RequestMapping(value="/modal", method = RequestMethod.GET)
     public String modalFunction(){
-        return "Lets Start";
+        return "Lets Start now!!!";
     }
 }
