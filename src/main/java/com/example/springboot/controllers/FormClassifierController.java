@@ -9,25 +9,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+
 @RestController
 @Api(tags = "Form classifier", description = "Api Endpoints for Form Classifier")
 public class FormClassifierController {
     private final FormClassifierService formClassifierService;
 
     @Autowired
-    public FormClassifierController(FormClassifierService formClassifierService){
+    public FormClassifierController(FormClassifierService formClassifierService) {
         this.formClassifierService = formClassifierService;
     }
-    @RequestMapping(value="/modal", method = RequestMethod.GET)
-    public String modalFunction(){
-        return formClassifierService.getModalString();
+
+    @RequestMapping(value = "/processInputFile", method = RequestMethod.POST)
+    public void processInputFile(@RequestParam("file") MultipartFile file) {
+        formClassifierService.processInputFile(file);
     }
-    @RequestMapping(value="/processInputFile", method = RequestMethod.POST)
-    public String processInputFile(@RequestParam("file") MultipartFile file){
-        return "File Name " + file.getOriginalFilename();
-    }
-    @RequestMapping(value="/processSampleFile", method = RequestMethod.POST)
-    public String processSampleFile(@RequestParam("file") MultipartFile file, @RequestParam("type") String type, @RequestParam("bias") String bias){
-        return "File Name " + file.getOriginalFilename() + " is a sample of " + type + " form" + bias + " bias";
+
+    @RequestMapping(value = "/processSampleFile", method = RequestMethod.POST)
+    public String processSampleFile(@RequestParam("file") MultipartFile file,
+                                    @RequestParam("type") String type,
+                                    @RequestParam(name = "bias", required = false) String bias) {
+        return formClassifierService.processSampleFile(file, type, bias);
     }
 }
