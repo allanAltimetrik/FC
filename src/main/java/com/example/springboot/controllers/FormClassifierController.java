@@ -27,7 +27,7 @@ public class FormClassifierController {
         return "File Name " + file.getOriginalFilename();
     }
     @RequestMapping(value="/processSampleFile", method = RequestMethod.POST)
-    public String processSampleFile(@RequestParam("file") MultipartFile file, @RequestParam("type") String type){
-        return "File Name " + file.getOriginalFilename() + " is a sample of " + type + " form";
+    public String processSampleFile(@RequestParam("file") MultipartFile file, @RequestParam("type") String type, @RequestParam("bias") String bias){
+        return "File Name " + file.getOriginalFilename() + " is a sample of " + type + " form" + bias + " bias";
     }
 }
