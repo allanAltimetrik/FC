@@ -1,6 +1,7 @@
 package com.example.springboot.services.impl;
 
 import com.example.springboot.helper.ModalUtil;
+import com.example.springboot.helper.OcrUtil;
 import com.example.springboot.helper.ZipUtil;
 import com.example.springboot.services.FormClassifierService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +11,18 @@ import org.springframework.stereotype.Service;
 public class FormClassifierServiceImpl implements FormClassifierService {
     private final ModalUtil modalUtil;
     private final ZipUtil zipUtil;
+    private final OcrUtil ocrUtil;
 
     @Autowired
-    public FormClassifierServiceImpl(ModalUtil modalUtil, ZipUtil zipUtil){
+    public FormClassifierServiceImpl(ModalUtil modalUtil, ZipUtil zipUtil, OcrUtil ocrUtil){
         this.modalUtil = modalUtil;
         this.zipUtil = zipUtil;
+        this.ocrUtil = ocrUtil;
     }
     @Override
     public String getModalString(){
         return modalUtil.generateRandomString();
     }
     // Add all service Implementations here like above
+
 }
