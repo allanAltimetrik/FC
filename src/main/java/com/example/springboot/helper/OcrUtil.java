@@ -9,9 +9,7 @@ import java.io.File;
 public class OcrUtil {
 	
     public static String extractTextFromImage(String File){
-
         String extractedText = null;
-
         try {
             File image = new File(File);
             Tesseract tesseract = new Tesseract();
@@ -24,10 +22,7 @@ public class OcrUtil {
         catch (Exception e){
             System.out.println("Exception - " + e);
         }
-
-        System.out.println("Extracted Text from Image - " + extractedText);
         return extractedText;
-
     }
 
 }

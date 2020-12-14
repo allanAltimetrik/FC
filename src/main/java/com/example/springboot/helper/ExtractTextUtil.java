@@ -29,11 +29,8 @@ public class ExtractTextUtil {
 			Iterator<String> Itr_1 = stopwords_HashSet.iterator();
 			while (Itr_1.hasNext()) {
 				String TextToReplace = Itr_1.next().toString();
-				System.out.println(TextToReplace);
 				ProcessedText = ProcessedText.replaceAll("(?i)\\b" + TextToReplace + "\\b", "").replaceAll("\\s+", " ");
 			}
-			System.out.println("Processed Text - " + ProcessedText);
-
 		}
 
 		return ProcessedText;
@@ -45,7 +42,6 @@ public class ExtractTextUtil {
 			String[] TextArray = text.split(",");
 			List<String> TextList = Arrays.asList(TextArray);
 			TextHashSet.addAll(TextList);
-			System.out.println("Hashset : " + TextHashSet);
 		}
 		return TextHashSet;
 	}
@@ -65,7 +61,6 @@ public class ExtractTextUtil {
 				}
 			}
 		}
-		System.out.println("Count :- " + map);
 		return map;
 	}
 
