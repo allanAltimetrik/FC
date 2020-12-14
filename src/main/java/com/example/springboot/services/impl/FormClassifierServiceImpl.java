@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -29,10 +32,20 @@ public class FormClassifierServiceImpl implements FormClassifierService {
     @Override
     public Hashtable<String, List<String>>  processSampleFile(MultipartFile multipartFile, String type, String bias) {
         try{
-            String pathName = "src/main/java/com/example/springboot/resources/" + System.currentTimeMillis() + "/" + multipartFile.getOriginalFilename();
-            File file = new File("pathName");
+            String directoryName = "src/main/java/com/example/springboot/resources/sampleFromUser/" + System.currentTimeMillis();
+            File directory = new File(directoryName);
+            if (! directory.exists()){
+                directory.mkdir();
+            }
+            String pathName = directoryName + "/" + multipartFile.getOriginalFilename();
+            InputStream initialStream = multipartFile.getInputStream();
+            byte[] buffer = new byte[initialStream.available()];
+            initialStream.read(buffer);
+            File file = new File(pathName);
             file.createNewFile();
-            multipartFile.transferTo(file);
+            try (OutputStream outStream = new FileOutputStream(file)) {
+                outStream.write(buffer);
+            }
             return keywordGenerationUtil.generateKeywordsFromImage(type, pathName);
         }
         catch(Exception ex) {
