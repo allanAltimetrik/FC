@@ -4,13 +4,13 @@ import java.util.*;
 
 public class KeywordGenerationUtil {
 
-	public static void main(String[] args) {
-		generateKeywordsFromImage("deathrecord",
-				"src/main/java/com/example/springboot/resources/samples/DeathNotice.jpg");
-	}
+//	public static void main(String[] args) {
+//		generateKeywordsFromImage("deathrecord",
+//				"src/main/java/com/example/springboot/resources/samples/DeathNotice.jpg", "      ");
+//	}
 
 	@SuppressWarnings("rawtypes")
-	public static Hashtable<String, List<String>> generateKeywordsFromImage(String fileType, String file) {
+	public static Hashtable<String, List<String>> generateKeywordsFromImage(String fileType, String file, String bias) {
 
 		//Extracting Text from Image
 		String extractedText = OcrUtil.extractTextFromImage(file);
@@ -30,7 +30,20 @@ public class KeywordGenerationUtil {
 				if ((Integer) singleWord.getValue() > 1) {
 					keywords_HashSet.add(singleWord.getKey().toString());
 				}
-			}
+			}			
+			
+			//Add bias to keywords
+			if(bias != "" || bias != null || bias != "\\s+") {
+				if (bias.contains(",")) {
+					String[] TextArray = bias.split(",");
+					List<String> TextList = Arrays.asList(TextArray);
+					keywords_HashSet.addAll(TextList);
+				}
+				else {
+					keywords_HashSet.add(bias);
+				}
+			}			
+			
 			String keywords = keywords_HashSet.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s+","");
 
 			// Converting File Type to Lower Case
@@ -45,8 +58,7 @@ public class KeywordGenerationUtil {
 				List<String> newKeywords_List = Arrays.asList(newKeywords_StringArray);
 				keywords_HashSet_New.addAll(newKeywords_List);
 				String newKeywords = keywords_HashSet_New.toString().replaceAll("\\[", "").replaceAll("\\]", "");
-				keywords = newKeywords;
-				PropertyFileUtil.updateKeywords(fileType, keywords);
+				PropertyFileUtil.updateKeywords(fileType, newKeywords);
 			} else {
 				PropertyFileUtil.updateKeywords(fileType, keywords);
 			}
