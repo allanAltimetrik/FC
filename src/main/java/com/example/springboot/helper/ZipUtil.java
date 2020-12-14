@@ -127,6 +127,9 @@ public class ZipUtil {
                 initialStream.read(buffer);
                 File file = new File(pathName);
                 file.createNewFile();
+                try (OutputStream outStream = new FileOutputStream(file)) {
+                    outStream.write(buffer);
+                }
                 if(fName.toLowerCase().contains(".zip")) { unZipFolderAndMoveToDestination(file,inputPath); }
                 else { copyFiles(directory,inputPath); }
             }
