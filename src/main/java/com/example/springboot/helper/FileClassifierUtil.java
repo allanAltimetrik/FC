@@ -13,9 +13,18 @@ public class FileClassifierUtil {
 	public static void main(String[] args) throws TesseractException, IOException, ConfigurationException {
 		//classifyForms("src/main/java/com/example/springboot/resources/samples/Kansas Birth Certificate.jpg");
 		
-		
-		
-		
+		HashMap<String, String> fileType = new HashMap<String, String>();
+		String directory = "src/main/java/com/example/springboot/resources/samples";
+		List<File> fileList = iterateOverFiles(directory);
+		Iterator<File> itr = fileList.iterator();
+		while(itr.hasNext()) {
+			File file = itr.next();			
+			String filepath = file.toString();
+			String fileName = file.getName().toString();
+			String type = classifyForms(filepath);
+			fileType.put(fileName, type);
+		}
+		System.out.println("File Types - " + fileType);		
 		
 	}
 
@@ -84,16 +93,18 @@ public class FileClassifierUtil {
 		return null;
 	}
 	
-	public static void iterateOverFiles(String directory) {		
+	public static List<File> iterateOverFiles(String directory) {		
 		File folder = new File(directory);
-		File[] listOfFiles = folder.listFiles();
+		File[] listOfFiles = folder.listFiles();		
 		for (int i = 0; i < listOfFiles.length; i++) {
 		  if (listOfFiles[i].isFile()) {
-		    System.out.println("File " + listOfFiles[i].getName());
+		    System.out.println("File - " + listOfFiles[i].getName());
 		  } else if (listOfFiles[i].isDirectory()) {
-		    System.out.println("Directory " + listOfFiles[i].getName());
+		    System.out.println("Directory - " + listOfFiles[i].getName());
 		  }
 		}
+		List<File> FileList = Arrays.asList(listOfFiles);		
+		return FileList;
 	}
 
 }
