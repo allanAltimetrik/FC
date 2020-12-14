@@ -1,34 +1,44 @@
 package com.example.springboot.helper;
 
-import net.sourceforge.tess4j.TesseractException;
-import org.apache.commons.configuration.ConfigurationException;
-
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
 
 public class FileClassifierUtil {
 
-	public static void main(String[] args) throws TesseractException, IOException, ConfigurationException {
-		//classifyForms("src/main/java/com/example/springboot/resources/samples/Kansas Birth Certificate.jpg");
+	public static void main(String[] args){		
+		String directory = "src/main/java/com/example/springboot/resources/trainedData";
+		classifyForms(directory);		
+	}	
+	
+	public static HashMap<String, String> classifyForms(String directory) {
 		
+		//Create Hashmap to store the filenames and type
 		HashMap<String, String> fileType = new HashMap<String, String>();
-		String directory = "src/main/java/com/example/springboot/resources/samples";
-		List<File> fileList = iterateOverFiles(directory);
-		Iterator<File> itr = fileList.iterator();
-		while(itr.hasNext()) {
-			File file = itr.next();			
-			String filepath = file.toString();
-			String fileName = file.getName().toString();
-			String type = classifyForms(filepath);
-			fileType.put(fileName, type);
-		}
-		System.out.println("File Types - " + fileType);		
 		
+		//Iterate the Files in directory
+		try {
+			List<File> fileList = iterateOverFiles(directory);
+			Iterator<File> itr = fileList.iterator();
+			while(itr.hasNext()) {
+				File file = itr.next();			
+				String filepath = file.toString();
+				String fileName = file.getName().toString();
+				String type = classifyForm(filepath);
+				fileType.put(fileName, type);
+			}
+		}
+		catch(Exception e) {
+			System.out.println("Exception - " + e);
+		}
+			
+			
+		System.out.println("File Types - " + fileType);		
+		return fileType;		
 	}
+	
 
-	public static String classifyForms(String file) throws TesseractException, IOException {
+	public static String classifyForm(String file) {
 
 		// Read All Keywords from Keywords File
 		Hashtable<String, List<String>> keywords = PropertyFileUtil.readAllKeywords();
@@ -92,6 +102,7 @@ public class FileClassifierUtil {
 		}
 		return null;
 	}
+	
 	
 	public static List<File> iterateOverFiles(String directory) {		
 		File folder = new File(directory);
