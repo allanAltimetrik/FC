@@ -1,0 +1,101 @@
+package com.example.springboot.helper;
+
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Properties;
+
+import org.apache.commons.configuration.PropertiesConfiguration;
+
+public class PropertyFileUtil {
+	
+	static String keywordsPropertyFile = "src/main/java/com/example/springboot/resources/propertyFiles/keywords.properties";
+	static String stopwordsPropertyFile = "src/main/java/com/example/springboot/resources/propertyFiles/stopwords.properties";
+	static String stopwordsKey = "stopwords";
+
+	public static Properties loadPropertyFile(String File) {
+		Properties prop = new Properties();
+		try {
+			FileInputStream fis = new FileInputStream(File);
+			prop.load(fis);
+		} catch (Exception e) {
+			System.out.println("Exception - " + e);
+		}
+		return prop;
+	}
+
+	public static String readProperty(String File, String Key) {
+		String value = null;
+		try {
+			FileInputStream fis = new FileInputStream(File);
+			Properties prop = new Properties();
+			prop.load(fis);
+			value = prop.getProperty(Key).replaceAll("\\s", "");
+			System.out.println("Value : " + value);
+			fis.close();
+		} catch (Exception e) {
+			System.out.println("Exception - " + e);
+		}
+		return value;
+	}
+
+	public static void updatePropertyFile(String File, String Key, String Value) {
+		try {
+			PropertiesConfiguration property = new PropertiesConfiguration(File);
+			property.setProperty(Key, Value);
+			property.save();
+		} catch (Exception e) {
+			System.out.println("Exception - " + e);
+		}
+	}
+	
+	
+	public static String readStopWords() {
+		String stopWords =  PropertyFileUtil.readProperty(stopwordsPropertyFile, stopwordsKey);
+		return stopWords;
+	}
+	
+	public static Properties loadKeywordsPropertFile() {
+		Properties prop = PropertyFileUtil.loadPropertyFile(keywordsPropertyFile);
+		return prop;
+	}
+	
+	public static String readPropertyFromKeywordsFile(String property) {
+		String keywords = readProperty(keywordsPropertyFile, property);
+		return keywords;
+	}
+	
+	public static void updateKeywords(String key, String value) {
+		updatePropertyFile(keywordsPropertyFile, key, value);
+	}
+		
+	public static Hashtable<String, List<String>> readAllKeywords() {
+		Hashtable<String, List<String>> keywords = new Hashtable<String, List<String>>();
+		try {
+			FileReader reader = new FileReader(keywordsPropertyFile);
+			Properties p = new Properties();
+			p.load(reader);
+
+			Enumeration<?> keys = p.propertyNames();
+			while (keys.hasMoreElements()) {
+				String key = (String) keys.nextElement();
+				String[] valuesArray = p.getProperty(key).split(",");
+				List<String>valuesList = Arrays.asList(valuesArray);
+				keywords.put(key, valuesList);
+			}
+		}
+		catch(Exception e) {
+			System.out.println("Exception - " + e);
+		}
+		System.out.println("Keywords - " + keywords);		
+		return keywords;
+	}
+	
+	
+	
+	
+
+}

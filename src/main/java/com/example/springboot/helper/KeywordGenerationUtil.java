@@ -1,153 +1,64 @@
 package com.example.springboot.helper;
 
-import net.sourceforge.tess4j.TesseractException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-
-import java.io.*;
 import java.util.*;
 
 public class KeywordGenerationUtil {
 
-	static String Keywords_PropertyFile = "src/main/java/com/example/springboot/resources/propertyFiles/keywords.properties";
-	static String Stopwords_PropertyFile = "src/main/java/com/example/springboot/resources/propertyFiles/stopwords.properties";
-	static String Stopwords_Key = "stopwords";
-
-//	public static void main(String[] args) throws TesseractException, IOException, ConfigurationException {
-//		generateKeywordsFromImage("DeathNotice", "src/main/java/com/example/springboot/resources/samples/DeathNotice.jpg");
-//	}
-
-	public static Hashtable<String, List<String>> generateKeywordsFromImage(String FileType, String FileName)
-			throws TesseractException {
-
-		// Getting Stopwords from Properties File as String
-		String stopwords_String = readProperty(Stopwords_PropertyFile, Stopwords_Key);
-
-        //Adding Stopwords to Set
-		HashSet<String> stopwords_HashSet = convertStringToHashSet(stopwords_String);
-
-		// Extracting Text from Image
-		String ExtractedText = OcrUtil.extractTextFromImage(FileName);
-
-		// Removing Empty Lines Spaces from Extracted Text
-		ExtractedText = ExtractedText.replaceAll("\r\n", " ").replaceAll("\n", " ");
-
-		// Removing Other Characters from Extracted Text
-		ExtractedText = ExtractedText.replaceAll("[^a-zA-Z]", " ").toLowerCase();
-
-		// Removing Less than 4 character Words from Extracted Text
-		ExtractedText = ExtractedText.replaceAll("\\b\\w{1,4}\\b", "");
-
-		// Removing Stopwords from Extracted Text
-		Iterator Itr_1 = stopwords_HashSet.iterator();
-		while (Itr_1.hasNext()) {
-			String TextToReplace = Itr_1.next().toString();
-			System.out.println(TextToReplace);
-			ExtractedText = ExtractedText.replaceAll("(?i)\\b" + TextToReplace + "\\b", "").replaceAll("\\s+", " ");
-		}
-		System.out.println("ExtractedText - " + ExtractedText);
-
-		// Count the frequency of words and add it to Keywords_HashSet set if the
-		// frequency is more than 2 times
-		HashSet<String> Keywords_HashSet = new HashSet<>();
-		Hashtable<String, Integer> table = countWords(ExtractedText);
-		for (Map.Entry entry : table.entrySet()) {
-			if ((Integer) entry.getValue() > 2) {
-				Keywords_HashSet.add(entry.getKey().toString());
-			}
-		}
-		String Keywords = Keywords_HashSet.toString().replaceAll("\\[", "").replaceAll("\\]", "");
-
-        //Converting File Type to Lower Case
-		FileType = FileType.toLowerCase();
-
-		// Update Property File
-		Properties prop = loadPropertyFile(Keywords_PropertyFile);
-		if (prop.containsKey(FileType)) {
-			String Keywords_String = readProperty(Keywords_PropertyFile, FileType.toLowerCase());
-			HashSet<String> Keywords_HashSet_New = convertStringToHashSet(Keywords_String);
-			
-			String[] NewKeywords_StringArray = Keywords.split(",");
-			List<String> NewKeywords_List = Arrays.asList(NewKeywords_StringArray);
-			Keywords_HashSet_New.addAll(NewKeywords_List);
-			String NewKeywords = Keywords_HashSet_New.toString().replaceAll("\\[", "").replaceAll("\\]","");
-			Keywords = NewKeywords;
-			updatePropertyFile(Keywords_PropertyFile, FileType, Keywords);
-		} else {
-			updatePropertyFile(Keywords_PropertyFile, FileType, Keywords);
-		}
-
-		Hashtable<String, List<String>> FileType_Keywords = new Hashtable<String, List<String>>();
-		String[] NewKeywordsStringArray = Keywords.split(",");
-		List<String> NewKeywordsList = Arrays.asList(NewKeywordsStringArray);
-		FileType_Keywords.put(FileType, NewKeywordsList);
-		System.out.println(FileType_Keywords);
-		return FileType_Keywords;
+	public static void main(String[] args) {
+		generateKeywordsFromImage("deathrecord",
+				"src/main/java/com/example/springboot/resources/samples/DeathNotice.jpg");
 	}
 
-	public static Hashtable countWords(String input) {
-		Hashtable<String, Integer> map = new Hashtable<String, Integer>();
-		if (input != null) {
-			String[] separatedWords = input.split(" ");
-			for (String str : separatedWords) {
-				if (map.containsKey(str)) {
-					int count = map.get(str);
-					if (!str.equals("")) {
-						map.put(str, count + 1);
-					}
-				} else {
-					map.put(str, 1);
+	@SuppressWarnings("rawtypes")
+	public static Hashtable<String, List<String>> generateKeywordsFromImage(String fileType, String file) {
+
+		//Extracting Text from Image
+		String extractedText = OcrUtil.extractTextFromImage(file);
+
+		//Process Extracted Text
+		String processedText = ExtractTextUtil.processExtractedText(extractedText);
+
+		//Initailize Hashtable for storing File Type and Keywords
+		Hashtable<String, List<String>> fileType_Keywords = new Hashtable<String, List<String>>();
+
+		if (processedText != "" || processedText != null) {
+
+			// Count the frequency of words and add it to Keywords_HashSet set
+			HashSet<String> keywords_HashSet = new HashSet<>();
+			Hashtable<String, Integer> words = ExtractTextUtil.countWords(processedText);
+			for (Map.Entry singleWord : words.entrySet()) {
+				if ((Integer) singleWord.getValue() > 1) {
+					keywords_HashSet.add(singleWord.getKey().toString());
 				}
 			}
-		}
-		System.out.println("Count :- " + map);
-		return map;
-	}
+			String keywords = keywords_HashSet.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s+","");
 
-	public static Properties loadPropertyFile(String File) {
-		Properties prop = new Properties();
-		try {
-			FileInputStream fis = new FileInputStream(File);
-			prop.load(fis);
-		} catch (Exception e) {
-			System.out.println("Exception - " + e);
-		}
-		return prop;
-	}
+			// Converting File Type to Lower Case
+			fileType = fileType.toLowerCase();
 
-	public static String readProperty(String File, String Key) {
-		String Value = null;
-		try {
-			FileInputStream fis = new FileInputStream(File);
-			Properties prop = new Properties();
-			prop.load(fis);
-			Value = prop.getProperty(Key).replaceAll("\\s", "");
-			System.out.println("Value : " + Value);
-			fis.close();
-		} catch (Exception e) {
-			System.out.println("Exception - " + e);
-		}
-		return Value;
-	}
+			// Update Property File
+			Properties prop = PropertyFileUtil.loadKeywordsPropertFile();
+			if (prop.containsKey(fileType)) {
+				String keywords_String = PropertyFileUtil.readPropertyFromKeywordsFile(fileType.toLowerCase());
+				HashSet<String> keywords_HashSet_New = ExtractTextUtil.convertStringToHashSet(keywords_String);
+				String[] newKeywords_StringArray = keywords.split(",");
+				List<String> newKeywords_List = Arrays.asList(newKeywords_StringArray);
+				keywords_HashSet_New.addAll(newKeywords_List);
+				String newKeywords = keywords_HashSet_New.toString().replaceAll("\\[", "").replaceAll("\\]", "");
+				keywords = newKeywords;
+				PropertyFileUtil.updateKeywords(fileType, keywords);
+			} else {
+				PropertyFileUtil.updateKeywords(fileType, keywords);
+			}
 
-	public static HashSet convertStringToHashSet(String Text) {
-		HashSet<String> TextHashSet = new HashSet<String>();
-		if (Text.contains(",")) {
-			String[] TextArray = Text.split(",");
-			List<String> TextList = Arrays.asList(TextArray);
-			TextHashSet.addAll(TextList);
-			System.out.println("Hashset : " + TextHashSet);
+			//Store FileType and Keywords in Hashtable
+			String[] newKeywordsStringArray = keywords.split(",");
+			List<String> NewKeywordsList = Arrays.asList(newKeywordsStringArray);
+			fileType_Keywords.put(fileType, NewKeywordsList);
+			System.out.println(fileType_Keywords);
 		}
-		return TextHashSet;
-	}
 
-	public static void updatePropertyFile(String File, String Key, String Value) {
-		try {
-			PropertiesConfiguration property = new PropertiesConfiguration(File);
-			property.setProperty(Key, Value);
-			property.save();
-		} catch (Exception e) {
-			System.out.println("Exception - " + e);
-		}
+		return fileType_Keywords;
 	}
 
 }
