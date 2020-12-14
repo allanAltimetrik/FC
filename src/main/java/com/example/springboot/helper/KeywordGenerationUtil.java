@@ -6,23 +6,14 @@ import java.util.*;
 
 @Component
 public class KeywordGenerationUtil {
-
-//	public static void main(String[] args) {
-//		generateKeywordsFromImage("deathrecord",
-//				"src/main/java/com/example/springboot/resources/samples/DeathNotice.jpg", "      ");
-//	}
-
 	@SuppressWarnings("rawtypes")
-	public static Hashtable<String, List<String>> generateKeywordsFromImage(String fileType, String file, String bias) {
-
+	public static List<String> generateKeywordsFromImage(String fileType, String file, String bias) {
+		List<String> keywordsArray = new ArrayList<String>();
 		//Extracting Text from Image
 		String extractedText = OcrUtil.extractTextFromImage(file);
 
 		//Process Extracted Text
 		String processedText = ExtractTextUtil.processExtractedText(extractedText);
-
-		//Initailize Hashtable for storing File Type and Keywords
-		Hashtable<String, List<String>> fileType_Keywords = new Hashtable<String, List<String>>();
 
 		if (processedText != "" || processedText != null) {
 
@@ -36,7 +27,7 @@ public class KeywordGenerationUtil {
 			}			
 			
 			//Add bias to keywords
-			if(bias != "" || bias != null || bias != "\\s+") {
+			if(bias != "" && bias != null && bias != "\\s+") {
 				if (bias.contains(",")) {
 					String[] TextArray = bias.split(",");
 					List<String> TextList = Arrays.asList(TextArray);
@@ -65,15 +56,9 @@ public class KeywordGenerationUtil {
 			} else {
 				PropertyFileUtil.updateKeywords(fileType, keywords);
 			}
-
-			//Store FileType and Keywords in Hashtable
-			String[] newKeywordsStringArray = keywords.split(",");
-			List<String> NewKeywordsList = Arrays.asList(newKeywordsStringArray);
-			fileType_Keywords.put(fileType, NewKeywordsList);
-			System.out.println(fileType_Keywords);
+			keywordsArray = Arrays.asList(keywords.split(","));
 		}
-
-		return fileType_Keywords;
+		return keywordsArray;
 	}
 
 }

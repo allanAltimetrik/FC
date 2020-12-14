@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -30,7 +31,8 @@ public class FormClassifierServiceImpl implements FormClassifierService {
     }
 
     @Override
-    public Hashtable<String, List<String>>  processSampleFile(MultipartFile multipartFile, String type, String bias) {
+    public List<String>  processSampleFile(MultipartFile multipartFile, String type, String bias) {
+        List<String> keywords = new ArrayList<String>();
         try{
             String directoryName = "src/main/java/com/example/springboot/resources/sampleFromUser/" + System.currentTimeMillis();
             File directory = new File(directoryName);
@@ -46,11 +48,11 @@ public class FormClassifierServiceImpl implements FormClassifierService {
             try (OutputStream outStream = new FileOutputStream(file)) {
                 outStream.write(buffer);
             }
-            return keywordGenerationUtil.generateKeywordsFromImage(type, pathName);
+            keywords = keywordGenerationUtil.generateKeywordsFromImage(type, pathName, bias);
         }
         catch(Exception ex) {
             System.out.println("Exception occured in processSampleFile" + ex.toString());
         }
-        return new Hashtable<>();
+        return keywords;
     }
 }

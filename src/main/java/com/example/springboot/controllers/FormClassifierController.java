@@ -29,7 +29,7 @@ public class FormClassifierController {
     }
 
     @RequestMapping(value = "/processSampleFile", method = RequestMethod.POST)
-    public Hashtable<String, List<String>> processSampleFile(@RequestParam("file") MultipartFile file,
+    public List<String> processSampleFile(@RequestParam("file") MultipartFile file,
                                                              @RequestParam("type") String type,
                                                              @RequestParam(name = "bias", required = false) String bias) {
         return formClassifierService.processSampleFile(file, type, bias);

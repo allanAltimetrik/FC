@@ -34,7 +34,6 @@ public class PropertyFileUtil {
 			Properties prop = new Properties();
 			prop.load(fis);
 			value = prop.getProperty(Key).replaceAll("\\s", "");
-			System.out.println("Value : " + value);
 			fis.close();
 		} catch (Exception e) {
 			System.out.println("Exception - " + e);

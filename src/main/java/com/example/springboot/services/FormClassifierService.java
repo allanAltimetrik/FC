@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface FormClassifierService {
     void processInputFile(MultipartFile file);
-    Hashtable<String, List<String>> processSampleFile(MultipartFile file, String type, String bias);
+    List<String> processSampleFile(MultipartFile file, String type, String bias);
 }
