@@ -20,14 +20,18 @@ import java.util.List;
 @Service
 public class FormClassifierServiceImpl implements FormClassifierService {
     private final KeywordGenerationUtil keywordGenerationUtil;
+    private final ZipUtil zipUtil;
     @Autowired
-    public FormClassifierServiceImpl(KeywordGenerationUtil keywordGenerationUtil){
+    public FormClassifierServiceImpl(KeywordGenerationUtil keywordGenerationUtil, ZipUtil zipUtil){
         this.keywordGenerationUtil = keywordGenerationUtil;
+        this.zipUtil = zipUtil;
     }
 
     @Override
     public void processInputFile(MultipartFile multipartFile){
-        //IndusUtlil(multipartFile, "src/main/java/com/example/springboot/resources/input/" + System.currentTimeMillis());
+        String directoryToProcess = "src/main/java/com/example/springboot/resources/inputFromUser/" + System.currentTimeMillis();
+        zipUtil.moveFilesToInputFolder(multipartFile, directoryToProcess);
+        System.out.println("directoryToProcess" + directoryToProcess);
     }
 
     @Override
