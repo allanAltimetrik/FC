@@ -1,7 +1,10 @@
 package com.example.springboot.helper;
 
+import org.springframework.stereotype.Component;
+
 import java.util.*;
 
+@Component
 public class KeywordGenerationUtil {
 
 	public static void main(String[] args) {

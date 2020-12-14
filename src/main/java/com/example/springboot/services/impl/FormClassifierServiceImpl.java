@@ -1,5 +1,6 @@
 package com.example.springboot.services.impl;
 
+import com.example.springboot.helper.KeywordGenerationUtil;
 import com.example.springboot.helper.ModalUtil;
 import com.example.springboot.helper.OcrUtil;
 import com.example.springboot.helper.ZipUtil;
@@ -9,25 +10,34 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.Hashtable;
+import java.util.List;
 
 @Service
 public class FormClassifierServiceImpl implements FormClassifierService {
-    private final ZipUtil zipUtil;
-    private final OcrUtil ocrUtil;
-
+    private final KeywordGenerationUtil keywordGenerationUtil;
     @Autowired
-    public FormClassifierServiceImpl(ZipUtil zipUtil, OcrUtil ocrUtil){
-        this.zipUtil = zipUtil;
-        this.ocrUtil = ocrUtil;
+    public FormClassifierServiceImpl(KeywordGenerationUtil keywordGenerationUtil){
+        this.keywordGenerationUtil = keywordGenerationUtil;
     }
 
     @Override
-    public void processInputFile(MultipartFile file){
-        zipUtil.copyFolder();
+    public void processInputFile(MultipartFile multipartFile){
+        //IndusUtlil(multipartFile, "src/main/java/com/example/springboot/resources/input/" + System.currentTimeMillis());
     }
 
     @Override
-    public String processSampleFile(MultipartFile file, String type, String bias) {
-        return "File Name " + file.getOriginalFilename() + " is a sample of " + type + " form " + bias + " bias";
+    public Hashtable<String, List<String>>  processSampleFile(MultipartFile multipartFile, String type, String bias) {
+        try{
+            String pathName = "src/main/java/com/example/springboot/resources/" + System.currentTimeMillis() + "/" + multipartFile.getOriginalFilename();
+            File file = new File("pathName");
+            file.createNewFile();
+            multipartFile.transferTo(file);
+            return keywordGenerationUtil.generateKeywordsFromImage(type, pathName);
+        }
+        catch(Exception ex) {
+            System.out.println("Exception occured in processSampleFile" + ex.toString());
+        }
+        return new Hashtable<>();
     }
 }
