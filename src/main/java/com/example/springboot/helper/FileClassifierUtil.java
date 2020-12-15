@@ -1,11 +1,9 @@
 package com.example.springboot.helper;
 
-import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
-@Component
+
 public class FileClassifierUtil {
 	
 	public static HashMap<String, String> classifyForms(String directory) {

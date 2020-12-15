@@ -1,10 +1,7 @@
 package com.example.springboot.helper;
 
-import org.springframework.stereotype.Component;
-
 import java.util.Random;
 
-@Component
 public class ModalUtil {
     public String generateRandomString() {
         int leftLimit = 48; // numeral '0'

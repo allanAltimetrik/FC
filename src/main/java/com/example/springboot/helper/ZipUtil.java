@@ -3,12 +3,9 @@ package com.example.springboot.helper;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.*;
 
-@Component
 public class ZipUtil {
         public static String moveFilesToInputFolder(MultipartFile multipartFile, String inputPath)
         {
