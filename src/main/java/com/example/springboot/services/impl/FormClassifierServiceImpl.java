@@ -1,5 +1,6 @@
 package com.example.springboot.services.impl;
 
+import com.example.springboot.helper.KeywordGenerationUtil;
 import com.example.springboot.helper.ModalUtil;
 import com.example.springboot.helper.OcrUtil;
 import com.example.springboot.helper.ZipUtil;
@@ -9,25 +10,53 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 
 @Service
 public class FormClassifierServiceImpl implements FormClassifierService {
+    private final KeywordGenerationUtil keywordGenerationUtil;
     private final ZipUtil zipUtil;
-    private final OcrUtil ocrUtil;
-
     @Autowired
-    public FormClassifierServiceImpl(ZipUtil zipUtil, OcrUtil ocrUtil){
+    public FormClassifierServiceImpl(KeywordGenerationUtil keywordGenerationUtil, ZipUtil zipUtil){
+        this.keywordGenerationUtil = keywordGenerationUtil;
         this.zipUtil = zipUtil;
-        this.ocrUtil = ocrUtil;
     }
 
     @Override
-    public void processInputFile(MultipartFile file){
-        zipUtil.copyFolder();
+    public void processInputFile(MultipartFile multipartFile){
+        String directoryToProcess = "src/main/java/com/example/springboot/resources/inputFromUser/" + System.currentTimeMillis();
+        zipUtil.moveFilesToInputFolder(multipartFile, directoryToProcess);
+        System.out.println("directoryToProcess" + directoryToProcess);
     }
 
     @Override
-    public String processSampleFile(MultipartFile file, String type, String bias) {
-        return "File Name " + file.getOriginalFilename() + " is a sample of " + type + " form " + bias + " bias";
+    public List<String>  processSampleFile(MultipartFile multipartFile, String type, String bias) {
+        List<String> keywords = new ArrayList<String>();
+        try{
+            String directoryName = "src/main/java/com/example/springboot/resources/sampleFromUser/" + System.currentTimeMillis();
+            File directory = new File(directoryName);
+            if (! directory.exists()){
+                directory.mkdir();
+            }
+            String pathName = directoryName + "/" + multipartFile.getOriginalFilename();
+            InputStream initialStream = multipartFile.getInputStream();
+            byte[] buffer = new byte[initialStream.available()];
+            initialStream.read(buffer);
+            File file = new File(pathName);
+            file.createNewFile();
+            try (OutputStream outStream = new FileOutputStream(file)) {
+                outStream.write(buffer);
+            }
+            keywords = keywordGenerationUtil.generateKeywordsFromImage(type, pathName, bias);
+        }
+        catch(Exception ex) {
+            System.out.println("Exception occured in processSampleFile" + ex.toString());
+        }
+        return keywords;
     }
 }

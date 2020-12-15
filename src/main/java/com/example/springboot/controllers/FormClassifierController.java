@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.Hashtable;
+import java.util.List;
 
 @RestController
 @Api(tags = "Form classifier", description = "Api Endpoints for Form Classifier")
@@ -27,9 +29,9 @@ public class FormClassifierController {
     }
 
     @RequestMapping(value = "/processSampleFile", method = RequestMethod.POST)
-    public String processSampleFile(@RequestParam("file") MultipartFile file,
-                                    @RequestParam("type") String type,
-                                    @RequestParam(name = "bias", required = false) String bias) {
+    public List<String> processSampleFile(@RequestParam("file") MultipartFile file,
+                                                             @RequestParam("type") String type,
+                                                             @RequestParam(name = "bias", required = false) String bias) {
         return formClassifierService.processSampleFile(file, type, bias);
     }
 }

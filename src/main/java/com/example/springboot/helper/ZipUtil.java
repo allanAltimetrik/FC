@@ -4,10 +4,9 @@ import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -111,6 +110,48 @@ public class ZipUtil {
 
         private String generateZipEntry(String file,String srcFolder) {
             return file.substring(srcFolder.length() + 1, file.length());
+        }
+
+        public void moveFilesToInputFolder(MultipartFile multipartFile, String inputPath)
+        {
+            String fName = multipartFile.getOriginalFilename();
+            String directoryName = "src/main/java/com/example/springboot/resources/temp/" + System.currentTimeMillis();
+            try{
+                File directory = new File(directoryName);
+                if (! directory.exists()){
+                    directory.mkdir();
+                }
+                String pathName = directoryName + "/" + fName;
+                InputStream initialStream = multipartFile.getInputStream();
+                byte[] buffer = new byte[initialStream.available()];
+                initialStream.read(buffer);
+                File file = new File(pathName);
+                file.createNewFile();
+                try (OutputStream outStream = new FileOutputStream(file)) {
+                    outStream.write(buffer);
+                }
+                if(fName.toLowerCase().contains(".zip")) { unZipFolderAndMoveToDestination(file,inputPath); }
+                else { copyFiles(directory,inputPath); }
+            }
+            catch (Exception e){e.printStackTrace();}
+        }
+        public void unZipFolderAndMoveToDestination(File file, String destination){
+            try {
+                ZipFile zipFile = new ZipFile(file);
+                zipFile.extractAll(destination);
+                System.out.println("Files are unzipped and copied to " + destination);
+            } catch (ZipException e) {
+                e.printStackTrace();
+            }
+        }
+        public void copyFiles(File file, String destination)
+        {
+            File dest = new File(destination);
+            try{
+                FileUtils.copyDirectory(file,dest);
+                System.out.println("Files are copied to "+ destination);
+            }
+            catch (Exception e){e.printStackTrace();}
         }
     }
 
