@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -24,8 +25,8 @@ public class FormClassifierController {
     }
 
     @RequestMapping(value = "/processInputFile", method = RequestMethod.POST)
-    public void processInputFile(@RequestParam("file") MultipartFile file) {
-        formClassifierService.processInputFile(file);
+    public HashMap<String, String> processInputFile(@RequestParam("file") MultipartFile file) {
+        return formClassifierService.processInputFile(file);
     }
 
     @RequestMapping(value = "/processSampleFile", method = RequestMethod.POST)

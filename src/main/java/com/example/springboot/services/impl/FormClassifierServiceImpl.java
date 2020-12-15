@@ -1,9 +1,6 @@
 package com.example.springboot.services.impl;
 
-import com.example.springboot.helper.KeywordGenerationUtil;
-import com.example.springboot.helper.ModalUtil;
-import com.example.springboot.helper.OcrUtil;
-import com.example.springboot.helper.ZipUtil;
+import com.example.springboot.helper.*;
 import com.example.springboot.services.FormClassifierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,24 +11,17 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
 @Service
 public class FormClassifierServiceImpl implements FormClassifierService {
-    private final KeywordGenerationUtil keywordGenerationUtil;
-    private final ZipUtil zipUtil;
-    @Autowired
-    public FormClassifierServiceImpl(KeywordGenerationUtil keywordGenerationUtil, ZipUtil zipUtil){
-        this.keywordGenerationUtil = keywordGenerationUtil;
-        this.zipUtil = zipUtil;
-    }
-
     @Override
-    public void processInputFile(MultipartFile multipartFile){
+    public HashMap<String, String> processInputFile(MultipartFile multipartFile){
         String directoryToProcess = "src/main/java/com/example/springboot/resources/inputFromUser/" + System.currentTimeMillis();
-        zipUtil.moveFilesToInputFolder(multipartFile, directoryToProcess);
-        System.out.println("directoryToProcess" + directoryToProcess);
+        String subDirectoryToProcess = ZipUtil.moveFilesToInputFolder(multipartFile, directoryToProcess);
+        return FileClassifierUtil.classifyForms(directoryToProcess + "/" + subDirectoryToProcess);
     }
 
     @Override
@@ -52,7 +42,7 @@ public class FormClassifierServiceImpl implements FormClassifierService {
             try (OutputStream outStream = new FileOutputStream(file)) {
                 outStream.write(buffer);
             }
-            keywords = keywordGenerationUtil.generateKeywordsFromImage(type, pathName, bias);
+            keywords = KeywordGenerationUtil.generateKeywordsFromImage(type, pathName, bias);
         }
         catch(Exception ex) {
             System.out.println("Exception occured in processSampleFile" + ex.toString());
