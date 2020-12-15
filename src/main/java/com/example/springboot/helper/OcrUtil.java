@@ -1,11 +1,8 @@
 package com.example.springboot.helper;
 
 import net.sourceforge.tess4j.Tesseract;
-import org.springframework.stereotype.Component;
-
 import java.io.File;
 
-@Component
 public class OcrUtil {
 	
     public static String extractTextFromImage(String File){

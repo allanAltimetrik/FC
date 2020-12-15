@@ -89,7 +89,6 @@ public class PropertyFileUtil {
 		catch(Exception e) {
 			System.out.println("Exception - " + e);
 		}
-		System.out.println("Keywords - " + keywords);		
 		return keywords;
 	}
 	
