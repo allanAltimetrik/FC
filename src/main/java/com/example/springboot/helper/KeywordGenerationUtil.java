@@ -1,10 +1,7 @@
 package com.example.springboot.helper;
 
-import org.springframework.stereotype.Component;
-
 import java.util.*;
 
-@Component
 public class KeywordGenerationUtil {
 	@SuppressWarnings("rawtypes")
 	public static List<String> generateKeywordsFromImage(String fileType, String file, String bias) {

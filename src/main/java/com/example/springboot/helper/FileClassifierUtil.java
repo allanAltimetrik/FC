@@ -5,11 +5,6 @@ import java.util.*;
 import java.util.Map.Entry;
 
 public class FileClassifierUtil {
-
-	public static void main(String[] args){		
-		String directory = "src/main/java/com/example/springboot/resources/trainedData";
-		classifyForms(directory);		
-	}	
 	
 	public static HashMap<String, String> classifyForms(String directory) {
 		
@@ -32,9 +27,7 @@ public class FileClassifierUtil {
 			System.out.println("Exception - " + e);
 		}
 			
-			
-		System.out.println("File Types - " + fileType);		
-		return fileType;		
+		return fileType;
 	}
 	
 
@@ -52,7 +45,6 @@ public class FileClassifierUtil {
 		// Convert the Processed Text to List
 		String[] processedTextArray = processedText.split("\\s+");
 		List<String> processedTextList = Arrays.asList(processedTextArray);
-		System.out.println("Processed Text List - " + processedTextList);
 
 		// Comparing the Processed Text with Keywords
 		Hashtable<String, Integer> matchingKeyWords = new Hashtable<>();
@@ -62,13 +54,11 @@ public class FileClassifierUtil {
 			Map.Entry<String, List<String>> entry = itr.next();
 			String key = entry.getKey();
 			List<String> value = new ArrayList<String>(entry.getValue());
-			System.out.println(value);
 			List<String> extractedTextList = new ArrayList<String>(processedTextList);
-			System.out.println(extractedTextList);
 			extractedTextList.retainAll(value);
 			matchingKeyWords.put(key, extractedTextList.size());
 		}
-		System.out.println("File Name - Number of Keywords Matched : " + matchingKeyWords);
+
 
 		// Finding Greater Number of Matching Keyword
 		List<Integer> numberOfMatchingWords = new ArrayList<Integer>();
@@ -81,7 +71,6 @@ public class FileClassifierUtil {
 		}
 		Collections.sort(numberOfMatchingWords, Collections.reverseOrder());
 		int greatestValue = numberOfMatchingWords.get(0);
-		System.out.println("GreatestValue - " + greatestValue);
 
 		// Get the File Type for Value
 		String fileType = null;
@@ -90,7 +79,6 @@ public class FileClassifierUtil {
 		} else {
 			fileType = "unknown file";
 		}
-		System.out.println("File Type - " + fileType);
 		return fileType;
 	}
 
@@ -104,16 +92,9 @@ public class FileClassifierUtil {
 	}
 	
 	
-	public static List<File> iterateOverFiles(String directory) {		
+	public static List<File> iterateOverFiles(String directory) {
 		File folder = new File(directory);
-		File[] listOfFiles = folder.listFiles();		
-		for (int i = 0; i < listOfFiles.length; i++) {
-		  if (listOfFiles[i].isFile()) {
-		    System.out.println("File - " + listOfFiles[i].getName());
-		  } else if (listOfFiles[i].isDirectory()) {
-		    System.out.println("Directory - " + listOfFiles[i].getName());
-		  }
-		}
+		File[] listOfFiles = folder.listFiles();
 		List<File> FileList = Arrays.asList(listOfFiles);		
 		return FileList;
 	}
