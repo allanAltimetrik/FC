@@ -2,8 +2,10 @@ package com.example.springboot.helper;
 
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
@@ -91,6 +93,50 @@ public class PropertyFileUtil {
 		}
 		return keywords;
 	}
+	
+	public static String getKeysFromKeywordsFile() {
+		List<String> keyList = new ArrayList<String>();
+		try {
+			FileReader reader = new FileReader(keywordsPropertyFile);
+			Properties p = new Properties();
+			p.load(reader);
+
+			Enumeration<?> keysEnumeration = p.propertyNames();
+			while (keysEnumeration.hasMoreElements()) {
+				String key = (String) keysEnumeration.nextElement();
+				keyList.add(key);
+			}
+		}
+		catch(Exception e) {
+			System.out.println("Exception - " + e);
+		}
+		
+		String keys = keyList.toString().replaceAll("\\[", "").replaceAll("\\]", "");
+		System.out.println(keys);
+		return keys;
+	}
+	
+	
+	public static String getValuesForKeyFromKeywordsFile(String key) {
+		String values = null;
+		try {
+			Properties prop = PropertyFileUtil.loadKeywordsPropertFile();
+			if (prop.containsKey(key.toLowerCase())) {
+				values = PropertyFileUtil.readPropertyFromKeywordsFile(key.toLowerCase());
+			}
+			else {
+				throw new Exception("Invalid Key");
+			}
+		}
+		catch(Exception e) {
+			System.out.println("Exception - " + e);
+		}
+		System.out.println(values);
+		return values;
+	}
+	
+	
+	
 	
 	
 	
