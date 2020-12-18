@@ -80,7 +80,7 @@ public class FileClassifierUtil {
 			if (greatestValue > 0) {
 				fileType = getKeyFromValue(matchingKeyWords, greatestValue).toString();
 			} else {
-				fileType = "unknown file";
+				fileType = "!!! File Not Classified !!!";
 			}
 
 		}
