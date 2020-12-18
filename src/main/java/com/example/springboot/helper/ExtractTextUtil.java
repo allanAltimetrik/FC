@@ -6,18 +6,18 @@ public class ExtractTextUtil {
 
 	public static String processExtractedText(String text) {
 
-		String ProcessedText = text;
+		String processedText = text;
 
-		if (ProcessedText != "" || ProcessedText != null) {
+		if (!processedText.equals("") && !processedText.equals(null) && processedText.length() > 0) {
 
 			// Removing Empty Lines Spaces from Extracted Text
-			ProcessedText = ProcessedText.replaceAll("\r\n", " ").replaceAll("\n", " ");
+			processedText = processedText.replaceAll("\r\n", " ").replaceAll("\n", " ");
 
 			// Removing Other Characters from Extracted Text
-			ProcessedText = ProcessedText.replaceAll("[^a-zA-Z]", " ").toLowerCase();
+			processedText = processedText.replaceAll("[^a-zA-Z]", " ").toLowerCase();
 
 			// Removing Less than 4 character Words from Extracted Text
-			ProcessedText = ProcessedText.replaceAll("\\b\\w{1,3}\\b", "");
+			processedText = processedText.replaceAll("\\b\\w{1,3}\\b", "");
 
 			// Getting Stopwords from Properties File as String
 			String stopwords_String = PropertyFileUtil.readStopWords();
@@ -28,22 +28,22 @@ public class ExtractTextUtil {
 			// Removing Stopwords from Extracted Text
 			Iterator<String> Itr_1 = stopwords_HashSet.iterator();
 			while (Itr_1.hasNext()) {
-				String TextToReplace = Itr_1.next().toString();
-				ProcessedText = ProcessedText.replaceAll("(?i)\\b" + TextToReplace + "\\b", "").replaceAll("\\s+", " ");
+				String textToReplace = Itr_1.next().toString();
+				processedText = processedText.replaceAll("(?i)\\b" + textToReplace + "\\b", "").replaceAll("\\s+", " ");
 			}
 		}
 
-		return ProcessedText;
+		return processedText;
 	}
 
 	public static HashSet<String> convertStringToHashSet(String text) {
-		HashSet<String> TextHashSet = new HashSet<String>();
+		HashSet<String> textHashSet = new HashSet<String>();
 		if (text.contains(",")) {
 			String[] TextArray = text.split(",");
 			List<String> TextList = Arrays.asList(TextArray);
-			TextHashSet.addAll(TextList);
+			textHashSet.addAll(TextList);
 		}
-		return TextHashSet;
+		return textHashSet;
 	}
 
 	public static Hashtable<String, Integer> countWords(String input) {

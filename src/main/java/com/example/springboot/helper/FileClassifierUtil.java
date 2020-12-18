@@ -41,43 +41,48 @@ public class FileClassifierUtil {
 
 		// Process Extracted Text
 		String processedText = ExtractTextUtil.processExtractedText(extractedText);
-
-		// Convert the Processed Text to List
-		String[] processedTextArray = processedText.split("\\s+");
-		List<String> processedTextList = Arrays.asList(processedTextArray);
-
-		// Comparing the Processed Text with Keywords
-		Hashtable<String, Integer> matchingKeyWords = new Hashtable<>();
-		Set<Map.Entry<String, List<String>>> entries = keywords.entrySet();
-		Iterator<Map.Entry<String, List<String>>> itr = entries.iterator();
-		while (itr.hasNext()) {
-			Map.Entry<String, List<String>> entry = itr.next();
-			String key = entry.getKey();
-			List<String> value = new ArrayList<String>(entry.getValue());
-			List<String> extractedTextList = new ArrayList<String>(processedTextList);
-			extractedTextList.retainAll(value);
-			matchingKeyWords.put(key, extractedTextList.size());
-		}
-
-
-		// Finding Greater Number of Matching Keyword
-		List<Integer> numberOfMatchingWords = new ArrayList<Integer>();
-		Set<Entry<String, Integer>> matchingText = matchingKeyWords.entrySet();
-		Iterator<Entry<String, Integer>> itr1 = matchingText.iterator();
-		while (itr1.hasNext()) {
-			Entry<String, Integer> entry = itr1.next();
-			int value = entry.getValue();
-			numberOfMatchingWords.add(value);
-		}
-		Collections.sort(numberOfMatchingWords, Collections.reverseOrder());
-		int greatestValue = numberOfMatchingWords.get(0);
-
-		// Get the File Type for Value
+		
+		// Initailize File Type Variable
 		String fileType = null;
-		if (greatestValue > 0) {
-			fileType = getKeyFromValue(matchingKeyWords, greatestValue).toString();
-		} else {
-			fileType = "unknown file";
+		
+		if (!processedText.equals("") && !processedText.equals(null) && processedText.length() > 0) {
+
+			// Convert the Processed Text to List
+			String[] processedTextArray = processedText.split("\\s+");
+			List<String> processedTextList = Arrays.asList(processedTextArray);
+
+			// Comparing the Processed Text with Keywords
+			Hashtable<String, Integer> matchingKeyWords = new Hashtable<>();
+			Set<Map.Entry<String, List<String>>> entries = keywords.entrySet();
+			Iterator<Map.Entry<String, List<String>>> itr = entries.iterator();
+			while (itr.hasNext()) {
+				Map.Entry<String, List<String>> entry = itr.next();
+				String key = entry.getKey();
+				List<String> value = new ArrayList<String>(entry.getValue());
+				List<String> extractedTextList = new ArrayList<String>(processedTextList);
+				extractedTextList.retainAll(value);
+				matchingKeyWords.put(key, extractedTextList.size());
+			}
+
+			// Finding Greater Number of Matching Keyword
+			List<Integer> numberOfMatchingWords = new ArrayList<Integer>();
+			Set<Entry<String, Integer>> matchingText = matchingKeyWords.entrySet();
+			Iterator<Entry<String, Integer>> itr1 = matchingText.iterator();
+			while (itr1.hasNext()) {
+				Entry<String, Integer> entry = itr1.next();
+				int value = entry.getValue();
+				numberOfMatchingWords.add(value);
+			}
+			Collections.sort(numberOfMatchingWords, Collections.reverseOrder());
+			int greatestValue = numberOfMatchingWords.get(0);
+
+			// Get the File Type for Value
+			if (greatestValue > 0) {
+				fileType = getKeyFromValue(matchingKeyWords, greatestValue).toString();
+			} else {
+				fileType = "unknown file";
+			}
+
 		}
 		return fileType;
 	}
