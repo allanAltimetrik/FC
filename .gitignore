@@ -4,3 +4,4 @@ target
 src/main/java/com/example/springboot/resources/sampleFromUser
 src/main/java/com/example/springboot/resources/temp
 src/main/java/com/example/springboot/resources/inputFromUser
+src/main/java/com/example/springboot/resources/textExtraction
