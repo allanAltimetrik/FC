@@ -78,10 +78,10 @@ public class FormClassifierServiceImpl implements FormClassifierService {
         String pathName = null;
         try{
             String directoryName = "src/main/java/com/example/springboot/resources/textExtraction/" + System.currentTimeMillis();
-            pathName =createFileFromMultipartFile(inputFile,directoryName);
+            pathName = createFileFromMultipartFile(inputFile,directoryName);
             String extractedText = OcrUtil.extractTextFromImage(pathName);
             processedText = "Processed Text: " + ExtractTextUtil.processExtractedText(extractedText).trim();
-        }catch (Exception e){processedText = "Processed Text: Unable to read text from File";}
+        }catch (Exception e){processedText = "Processed Text: Not able to read text from File!!!";}
         return  processedText;
     }
 }

@@ -7,9 +7,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -40,13 +44,14 @@ public class FormClassifierController {
         return formClassifierService.getKeywords();
     }
 
-    @RequestMapping(value = "/getKeywordsBasedOnKey", method = RequestMethod.GET)
-    public String[] getKeywords(@RequestParam(name = "key", required = false) String key) {
+    @RequestMapping(value = "/getKeywords/{key}", method = RequestMethod.GET)
+    public String[] getKeywords(@PathVariable String key) {
         return formClassifierService.getKeywords(key);
     }
 
     @RequestMapping(value = "/processedTextFromFile", method = RequestMethod.POST)
-    public String getProcessedTextFromFile(@RequestParam("file") MultipartFile file) {
-        return formClassifierService.getProcessedTextFromFile(file);
+    public ResponseEntity getProcessedTextFromFile(@RequestParam("file") MultipartFile file) {
+        String processedText = formClassifierService.getProcessedTextFromFile(file);
+        return new ResponseEntity(processedText, HttpStatus.CREATED);
     }
 }

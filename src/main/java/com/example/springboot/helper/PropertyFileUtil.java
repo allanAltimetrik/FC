@@ -79,7 +79,6 @@ public class PropertyFileUtil {
 			FileReader reader = new FileReader(keywordsPropertyFile);
 			Properties p = new Properties();
 			p.load(reader);
-
 			Enumeration<?> keys = p.propertyNames();
 			while (keys.hasMoreElements()) {
 				String key = (String) keys.nextElement();
