@@ -18,7 +18,7 @@ public class KeywordGenerationUtil {
 			HashSet<String> keywords_HashSet = new HashSet<>();
 			Hashtable<String, Integer> words = ExtractTextUtil.countWords(processedText);
 			for (Map.Entry singleWord : words.entrySet()) {
-				if ((Integer) singleWord.getValue() > 1) {
+				if ((Integer) singleWord.getValue() > 2) {
 					keywords_HashSet.add(singleWord.getKey().toString());
 				}
 			}			
