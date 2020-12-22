@@ -1,8 +1,12 @@
 package com.example.springboot.helper;
 
+import net.lingala.zip4j.ZipFile;
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class FileClassifierUtil {
 	
@@ -104,4 +108,36 @@ public class FileClassifierUtil {
 		return FileList;
 	}
 
+	public static String storeAndReturnOutputFileName(String inputFormsDirectory, HashMap<String, String> report, String uid) {
+		String outputFileName = "";
+		try {
+			String downloadsDirectory = "src/main/java/com/example/springboot/resources/downloads/";
+			String unCompressedDirectory = "uncompressed/" + uid;
+			String compressedDirectory = "compresssed/";
+			report.keySet().stream().forEach(elem -> {
+				try {
+					String unCompressedDirectoryPath = downloadsDirectory + unCompressedDirectory + "/" + report.get(elem);
+					new File(unCompressedDirectoryPath).mkdirs();
+					FileUtils.copyFileToDirectory(
+							new File(inputFormsDirectory + "/" + elem),
+							new File(unCompressedDirectoryPath)
+					);
+				}
+				catch (Exception ex) {
+					System.out.println("Exception in storeAndReturnDownloadUrl inside preprocessor path creation"  + elem + ex.toString());
+				}
+			});
+
+			String compressedDirectoryPath = downloadsDirectory + compressedDirectory;
+			new File(compressedDirectoryPath).mkdirs();
+			new ZipFile(
+				new File(downloadsDirectory + compressedDirectory + uid + ".zip")
+			).addFolder(new File(downloadsDirectory + unCompressedDirectory));
+			outputFileName = uid + ".zip";
+		}
+		catch (Exception ex) {
+			System.out.println("Exception in storeAndReturnDownloadUrl" + ex.toString());
+		}
+		return outputFileName;
+	}
 }

@@ -28,7 +28,7 @@ public class FormClassifierController {
     }
 
     @RequestMapping(value = "/classifyInputFile", method = RequestMethod.POST)
-    public HashMap<String, String> processInputFile(@RequestParam("file") MultipartFile file) {
+    public HashMap<String, Object> processInputFile(@RequestParam("file") MultipartFile file) {
         return formClassifierService.processInputFile(file);
     }
 
