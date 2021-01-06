@@ -1,19 +1,21 @@
 package com.example.springboot.helper;
 
+import com.example.springboot.model.Report;
+import com.example.springboot.services.FormClassifierService;
 import net.lingala.zip4j.ZipFile;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
+
 
 public class FileClassifierUtil {
 	
-	public static HashMap<String, String> classifyForms(String directory) {
+	public static HashMap<String, Report> classifyForms(String directory) {
 		
 		//Create Hashmap to store the filenames and type
-		HashMap<String, String> fileType = new HashMap<String, String>();
+		HashMap<String, Report> fileType = new HashMap<String, Report>();
 		
 		//Iterate the Files in directory
 		try {
@@ -23,8 +25,8 @@ public class FileClassifierUtil {
 				File file = itr.next();			
 				String filepath = file.toString();
 				String fileName = file.getName().toString();
-				String type = classifyForm(filepath);
-				fileType.put(fileName, type);
+				Report report = new Report(classifyForm(filepath), ImageComplexityUtil.getImageComplexity(filepath));
+				fileType.put(fileName, report);
 			}
 		}
 		catch(Exception e) {
@@ -108,7 +110,7 @@ public class FileClassifierUtil {
 		return FileList;
 	}
 
-	public static String storeAndReturnOutputFileName(String inputFormsDirectory, HashMap<String, String> report, String uid) {
+	public static String storeAndReturnOutputFileName(String inputFormsDirectory, HashMap<String, Report> report, String uid) {
 		String outputFileName = "";
 		try {
 			String downloadsDirectory = "src/main/java/com/example/springboot/resources/downloads/";
@@ -116,7 +118,7 @@ public class FileClassifierUtil {
 			String compressedDirectory = "compresssed/";
 			report.keySet().stream().forEach(elem -> {
 				try {
-					String unCompressedDirectoryPath = downloadsDirectory + unCompressedDirectory + "/" + report.get(elem);
+					String unCompressedDirectoryPath = downloadsDirectory + unCompressedDirectory + "/" + report.get(elem).getType();
 					new File(unCompressedDirectoryPath).mkdirs();
 					FileUtils.copyFileToDirectory(
 							new File(inputFormsDirectory + "/" + elem),
