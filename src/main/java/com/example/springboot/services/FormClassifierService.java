@@ -12,6 +12,6 @@ public interface FormClassifierService {
     HashMap<String, Object> processInputFile(MultipartFile file);
     List<String> processSampleFile(MultipartFile file, String type, String bias);
     Map<String,String> getKeywords();
-    String[] getKeywords(String key);
+    String[] getKeywords(String fileType);
     String getProcessedTextFromFile(MultipartFile file);
 }

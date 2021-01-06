@@ -2,6 +2,7 @@ package com.example.springboot.controllers;
 
 import com.example.springboot.services.FormClassifierService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,11 +28,13 @@ public class FormClassifierController {
         this.formClassifierService = formClassifierService;
     }
 
+    @ApiOperation(value = "To Classify input File(s) from user")
     @RequestMapping(value = "/classifyInputFile", method = RequestMethod.POST)
     public HashMap<String, Object> processInputFile(@RequestParam("file") MultipartFile file) {
         return formClassifierService.processInputFile(file);
     }
 
+    @ApiOperation(value = "To Extract keyword(s) from sample file")
     @RequestMapping(value = "/processSampleFile", method = RequestMethod.POST)
     public List<String> processSampleFile(@RequestParam("file") MultipartFile file,
                                           @RequestParam("type") String type,
@@ -39,16 +42,19 @@ public class FormClassifierController {
         return formClassifierService.processSampleFile(file, type, bias);
     }
 
+    @ApiOperation(value = "View All File Category keyword(s)")
     @RequestMapping(value = "/getKeywords", method = RequestMethod.GET)
     public Map<String,String> getKeywords() {
         return formClassifierService.getKeywords();
     }
 
-    @RequestMapping(value = "/getKeywords/{key}", method = RequestMethod.GET)
-    public String[] getKeywords(@PathVariable String key) {
-        return formClassifierService.getKeywords(key);
+    @ApiOperation(value = "View File Category keyword(s) based on given FileType")
+    @RequestMapping(value = "/getKeywords/{fileType}", method = RequestMethod.GET)
+    public String[] getKeywords(@PathVariable String fileType) {
+        return formClassifierService.getKeywords(fileType);
     }
 
+    @ApiOperation(value = "Get Processed Text from input File")
     @RequestMapping(value = "/processedTextFromFile", method = RequestMethod.POST)
     public ResponseEntity getProcessedTextFromFile(@RequestParam("file") MultipartFile file) {
         String processedText = formClassifierService.getProcessedTextFromFile(file);

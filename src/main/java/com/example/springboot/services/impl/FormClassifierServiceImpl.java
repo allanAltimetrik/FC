@@ -73,8 +73,8 @@ public class FormClassifierServiceImpl implements FormClassifierService {
     }
 
     @Override
-    public String[] getKeywords(String key){
-        String values =  PropertyFileUtil.getValuesForKeyFromKeywordsFile(key.trim());
+    public String[] getKeywords(String fileType){
+        String values =  PropertyFileUtil.getValuesForKeyFromKeywordsFile(fileType.trim());
         String[] valuesArray = values.split(",");
         return  valuesArray;
     }
