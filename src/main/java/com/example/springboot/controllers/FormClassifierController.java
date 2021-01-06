@@ -34,7 +34,7 @@ public class FormClassifierController {
         return formClassifierService.processInputFile(file);
     }
 
-    @ApiOperation(value = "To Extract keyword(s) from sample file")
+    @ApiOperation(value = "To Extract keyword(s) from Sample File")
     @RequestMapping(value = "/processSampleFile", method = RequestMethod.POST)
     public List<String> processSampleFile(@RequestParam("file") MultipartFile file,
                                           @RequestParam("type") String type,
