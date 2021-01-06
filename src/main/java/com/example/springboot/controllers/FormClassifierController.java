@@ -1,6 +1,5 @@
 package com.example.springboot.controllers;
 
-import com.example.springboot.model.Report;
 import com.example.springboot.services.FormClassifierService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +34,7 @@ public class FormClassifierController {
     }
 
     @ApiOperation(value = "To Extract keyword(s) from Sample File")
-    @RequestMapping(value = "/processSamp leFile", method = RequestMethod.POST)
+    @RequestMapping(value = "/processSampleFile", method = RequestMethod.POST)
     public List<String> processSampleFile(@RequestParam("file") MultipartFile file,
                                           @RequestParam("type") String type,
                                           @RequestParam(name = "bias", required = false) String bias) {
