@@ -33,13 +33,13 @@ public class FormClassifierServiceImpl implements FormClassifierService {
         return path;
     }
     @Override
-    public HashMap<String, Object> processInputFile(MultipartFile multipartFile){
+    public HashMap<String, Object> processInputFile(MultipartFile multipartFile, String classifyBy){
         String uid = Long.toString(System.currentTimeMillis());
         String directoryToProcess = "src/main/java/com/example/springboot/resources/inputFromUser/" + uid;
         String subDirectoryToProcess = ZipUtil.moveFilesToInputFolder(multipartFile, directoryToProcess);
         String inputFormsDirectory = directoryToProcess + "/" + subDirectoryToProcess;
         HashMap<String, Report> report = FileClassifierUtil.classifyForms(inputFormsDirectory);
-        String outputFileName = FileClassifierUtil.storeAndReturnOutputFileName(inputFormsDirectory, report, uid);
+        String outputFileName = FileClassifierUtil.storeAndReturnOutputFileName(inputFormsDirectory, report, uid, classifyBy);
         HashMap<String, Object> response = new HashMap<String, Object>();
         response.put("report", report);
         response.put("downloadUrl", "http://localhost:8080/download/" + outputFileName);
