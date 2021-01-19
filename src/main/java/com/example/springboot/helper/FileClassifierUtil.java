@@ -24,7 +24,10 @@ public class FileClassifierUtil {
 				File file = itr.next();			
 				String filepath = file.toString();
 				String fileName = file.getName().toString();
-				Report report = new Report(classifyForm(filepath), ImageComplexityUtil.getImageComplexity(filepath));
+				HashMap<String, Object> complexityMap = ImageComplexityUtil.getImageComplexity(filepath);
+				int noOfWords = (int) complexityMap.get("noOfWords");
+				String complexity = complexityMap.get("complexity").toString();
+				Report report = new Report(classifyForm(filepath), complexity, noOfWords);
 				fileType.put(fileName, report);
 			}
 		}
