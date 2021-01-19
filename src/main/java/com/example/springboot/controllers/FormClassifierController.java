@@ -29,8 +29,10 @@ public class FormClassifierController {
 
     @ApiOperation(value = "Classifies forms and generates report, download link")
     @RequestMapping(value = "/formClassification", method = RequestMethod.POST)
-    public HashMap<String, Object> processInputFile(@RequestParam("file") MultipartFile file) {
-        return formClassifierService.processInputFile(file);
+    public HashMap<String, Object> processInputFile(@RequestParam("file") MultipartFile file,
+                                                    @RequestParam(name= "classifyBy", defaultValue="type") String classifyBy
+    ) {
+        return formClassifierService.processInputFile(file, classifyBy);
     }
 
     @ApiOperation(value = "To extract keyword(s) from sample file to train the algorithm")

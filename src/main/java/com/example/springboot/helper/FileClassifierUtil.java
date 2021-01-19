@@ -24,7 +24,10 @@ public class FileClassifierUtil {
 				File file = itr.next();			
 				String filepath = file.toString();
 				String fileName = file.getName().toString();
-				Report report = new Report(classifyForm(filepath), ImageComplexityUtil.getImageComplexity(filepath));
+				HashMap<String, Object> complexityMap = ImageComplexityUtil.getImageComplexity(filepath);
+				int noOfWords = (int) complexityMap.get("noOfWords");
+				String complexity = complexityMap.get("complexity").toString();
+				Report report = new Report(classifyForm(filepath), complexity, noOfWords);
 				fileType.put(fileName, report);
 			}
 		}
@@ -109,7 +112,7 @@ public class FileClassifierUtil {
 		return FileList;
 	}
 
-	public static String storeAndReturnOutputFileName(String inputFormsDirectory, HashMap<String, Report> report, String uid) {
+	public static String storeAndReturnOutputFileName(String inputFormsDirectory, HashMap<String, Report> report, String uid, String classifyBy) {
 		String outputFileName = "";
 		try {
 			String downloadsDirectory = "src/main/java/com/example/springboot/resources/downloads/";
@@ -117,7 +120,11 @@ public class FileClassifierUtil {
 			String compressedDirectory = "compresssed/";
 			report.keySet().stream().forEach(elem -> {
 				try {
-					String unCompressedDirectoryPath = downloadsDirectory + unCompressedDirectory + "/" + report.get(elem).getType();
+					String unCompressedDirectoryPath = downloadsDirectory + unCompressedDirectory + "/" ;
+					if(classifyBy.equalsIgnoreCase("complexity")) {
+						unCompressedDirectoryPath += report.get(elem).getComplexity() + "/";
+					}
+					unCompressedDirectoryPath += report.get(elem).getType();
 					new File(unCompressedDirectoryPath).mkdirs();
 					FileUtils.copyFileToDirectory(
 							new File(inputFormsDirectory + "/" + elem),
