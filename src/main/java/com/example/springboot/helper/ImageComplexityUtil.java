@@ -1,8 +1,10 @@
 package com.example.springboot.helper;
 
+import java.util.HashMap;
+
 public class ImageComplexityUtil {
 	
-	public static String getImageComplexity(String file) {
+	public static HashMap<String, Object> getImageComplexity(String file) {
 		
 		//Extracting Text from Image
 		String extractedText = OcrUtil.extractTextFromImage(file);
@@ -11,20 +13,22 @@ public class ImageComplexityUtil {
 		int numberOfWords = wordcount(extractedText);
 		
 		//Determining Complexity
-		String complexity = null;
+		String complexityType = "";
 		if(numberOfWords<10) {
-			complexity = "Unable to Determine";
+			complexityType = "Unable to Determine";
 		}
 		else if(numberOfWords>=10 & numberOfWords<200) {
-			complexity = "Low";
+			complexityType = "Low";
 		}
 		else if(numberOfWords>=200 & numberOfWords<500) {
-			complexity = "Medium";
+			complexityType = "Medium";
 		}
 		else if(numberOfWords>=500) {
-			complexity = "High";
+			complexityType = "High";
 		}
-
+		HashMap<String, Object> complexity = new HashMap<String, Object>();
+		complexity.put("noOfWords", numberOfWords);
+		complexity.put("complexity", complexityType);
 		return complexity;
 	}
 	

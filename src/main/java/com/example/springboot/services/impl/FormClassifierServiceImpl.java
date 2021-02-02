@@ -1,6 +1,7 @@
 package com.example.springboot.services.impl;
 
 import com.example.springboot.helper.*;
+import com.example.springboot.model.Report;
 import com.example.springboot.services.FormClassifierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,13 +33,13 @@ public class FormClassifierServiceImpl implements FormClassifierService {
         return path;
     }
     @Override
-    public HashMap<String, Object> processInputFile(MultipartFile multipartFile){
+    public HashMap<String, Object> processInputFile(MultipartFile multipartFile, String classifyBy){
         String uid = Long.toString(System.currentTimeMillis());
         String directoryToProcess = "src/main/java/com/example/springboot/resources/inputFromUser/" + uid;
         String subDirectoryToProcess = ZipUtil.moveFilesToInputFolder(multipartFile, directoryToProcess);
         String inputFormsDirectory = directoryToProcess + "/" + subDirectoryToProcess;
-        HashMap<String, String> report = FileClassifierUtil.classifyForms(inputFormsDirectory);
-        String outputFileName = FileClassifierUtil.storeAndReturnOutputFileName(inputFormsDirectory, report, uid);
+        HashMap<String, Report> report = FileClassifierUtil.classifyForms(inputFormsDirectory);
+        String outputFileName = FileClassifierUtil.storeAndReturnOutputFileName(inputFormsDirectory, report, uid, classifyBy);
         HashMap<String, Object> response = new HashMap<String, Object>();
         response.put("report", report);
         response.put("downloadUrl", "http://localhost:8080/download/" + outputFileName);
@@ -73,8 +74,8 @@ public class FormClassifierServiceImpl implements FormClassifierService {
     }
 
     @Override
-    public String[] getKeywords(String key){
-        String values =  PropertyFileUtil.getValuesForKeyFromKeywordsFile(key.trim());
+    public String[] getKeywords(String fileType){
+        String values =  PropertyFileUtil.getValuesForKeyFromKeywordsFile(fileType.trim());
         String[] valuesArray = values.split(",");
         return  valuesArray;
     }
