@@ -19,11 +19,8 @@ public class ExtractTextUtil {
 			// Removing Less than 4 character Words from Extracted Text
 			processedText = processedText.replaceAll("\\b\\w{1,3}\\b", "");
 
-			// Getting Stopwords from Properties File as String
-			String stopwords_String = PropertyFileUtil.readStopWords();
-
-			// Adding Stopwords to Set
-			HashSet<String> stopwords_HashSet = convertStringToHashSet(stopwords_String);
+			// Getting Stopwords
+			HashSet<String> stopwords_HashSet = PropertyFileUtil.getStopWords();
 
 			// Removing Stopwords from Extracted Text
 			Iterator<String> Itr_1 = stopwords_HashSet.iterator();
