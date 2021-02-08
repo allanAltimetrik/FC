@@ -68,8 +68,21 @@ public class FileClassifierUtil {
 				String key = entry.getKey();
 				List<String> value = new ArrayList<String>(entry.getValue());
 				List<String> extractedTextList = new ArrayList<String>(processedTextList);
-				extractedTextList.retainAll(value);
-				matchingKeyWords.put(key, extractedTextList.size());
+				//extractedTextList.retainAll(value);
+				//matchingKeyWords.put(key, extractedTextList.size());
+				int count = 0;
+				for(int i=0; i<value.size(); i++) {
+					for(int j=0; j<extractedTextList.size(); j++) {
+						String keywordsValue = value.get(i).toString();
+						String extractedTextValue = extractedTextList.get(j).toString();
+						if (!extractedTextValue.equals("") && !extractedTextValue.equals(null) && extractedTextValue.length() > 0) {
+							if(keywordsValue.matches( "(.*)" + extractedTextValue + "(.*)") || extractedTextValue.matches("(.*)" + keywordsValue + "(.*)")) {
+								count = count+1;
+							}
+						}
+					}					
+				}
+				matchingKeyWords.put(key, count);
 			}
 
 			// Finding Greater Number of Matching Keyword
