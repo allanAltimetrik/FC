@@ -32,6 +32,7 @@ public class FormClassifierServiceImpl implements FormClassifierService {
         }catch (IOException ex){ex.printStackTrace();}
         return path;
     }
+    
     @Override
     public HashMap<String, Object> processInputFile(MultipartFile multipartFile, String classifyBy){
         String uid = Long.toString(System.currentTimeMillis());
@@ -50,10 +51,12 @@ public class FormClassifierServiceImpl implements FormClassifierService {
     public List<String> processSampleFile(MultipartFile multipartFile, String type, String bias) {
         List<String> keywords = new ArrayList<String>();
         String  pathName = null;
-        try{
-            String directoryName = "src/main/java/com/example/springboot/resources/sampleFromUser/" + System.currentTimeMillis();
-            pathName =createFileFromMultipartFile(multipartFile,directoryName);
-            keywords = KeywordGenerationUtil.generateKeywordsFromImage(type, pathName, bias);
+        try{     
+            String uid = Long.toString(System.currentTimeMillis());
+            String directoryToProcess = "src/main/java/com/example/springboot/resources/sampleFromUser/" + uid;
+            String subDirectoryToProcess = ZipUtil.moveFilesToInputFolder(multipartFile, directoryToProcess);
+            String inputFormsDirectory = directoryToProcess + "/" + subDirectoryToProcess;
+            keywords = KeywordGenerationUtil.generateKeywords(type, inputFormsDirectory, bias);
         }
         catch(Exception ex) {
             System.out.println("Exception occured in processSampleFile" + ex.toString());
