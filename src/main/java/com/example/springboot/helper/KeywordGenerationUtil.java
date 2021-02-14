@@ -1,8 +1,35 @@
 package com.example.springboot.helper;
 
+import java.io.File;
 import java.util.*;
 
 public class KeywordGenerationUtil {
+	
+	
+	public static List<String> generateKeywords(String fileType, String directory, String bias) {
+		
+		//Create Set to Store the Keywords
+		HashSet<String> keywordSet = new HashSet<String>();
+		
+		//Iterate the Files in directory
+		try {
+			List<File> fileList = iterateOverFiles(directory);
+			Iterator<File> itr = fileList.iterator();
+			while(itr.hasNext()) {
+				File file = itr.next();			
+				String filepath = file.toString();
+				List<String> keywords = generateKeywordsFromImage(fileType, filepath, bias);
+				keywordSet.addAll(keywords);
+			}
+		}
+		catch(Exception e) {
+			System.out.println("Exception - " + e);
+		}
+		
+		List<String> keywordsArray =  new ArrayList<String>(keywordSet);
+		return keywordsArray;
+	}	
+	
 	@SuppressWarnings("rawtypes")
 	public static List<String> generateKeywordsFromImage(String fileType, String file, String bias) {
 		List<String> keywordsArray = new ArrayList<String>();
@@ -18,7 +45,7 @@ public class KeywordGenerationUtil {
 			HashSet<String> keywords_HashSet = new HashSet<>();
 			Hashtable<String, Integer> words = ExtractTextUtil.countWords(processedText);
 			for (Map.Entry singleWord : words.entrySet()) {
-				if ((Integer) singleWord.getValue() > 2) {
+				if ((Integer) singleWord.getValue() > 3) {
 					keywords_HashSet.add(singleWord.getKey().toString());
 				}
 			}			
@@ -60,6 +87,13 @@ public class KeywordGenerationUtil {
 			}
 		}
 		return keywordsArray;
+	}
+	
+	public static List<File> iterateOverFiles(String directory) {
+		File folder = new File(directory);
+		File[] listOfFiles = folder.listFiles();
+		List<File> FileList = Arrays.asList(listOfFiles);		
+		return FileList;
 	}
 
 }

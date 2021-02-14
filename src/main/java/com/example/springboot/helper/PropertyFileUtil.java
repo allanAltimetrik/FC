@@ -1,7 +1,9 @@
 package com.example.springboot.helper;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -9,13 +11,16 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.springframework.util.ResourceUtils;
 
 public class PropertyFileUtil {
 	
 	static String keywordsPropertyFile = "src/main/java/com/example/springboot/resources/propertyFiles/keywords.properties";
 	static String stopwordsPropertyFile = "src/main/java/com/example/springboot/resources/propertyFiles/stopwords.properties";
+	static String stopwordsTextFile = "src/main/java/com/example/springboot/resources/propertyFiles/stopwords.txt";
 	static String stopwordsKey = "stopwords";
 
 	public static Properties loadPropertyFile(String File) {
@@ -133,6 +138,20 @@ public class PropertyFileUtil {
 		System.out.println(values);
 		return values;
 	}
+	
+	public static HashSet<String> getStopWords(){
+		HashSet<String> stopwords_HashSet = new HashSet<String>();
+        try {
+        	File file = ResourceUtils.getFile(stopwordsTextFile);
+        	List<String> lines = Files.readAllLines(file.toPath());
+        	lines = lines.stream().map(line -> line.toLowerCase()).collect(Collectors.toList());
+        	stopwords_HashSet = new HashSet<String>(lines);
+        }
+		catch(Exception e) {
+			System.out.println("Exception - " + e);
+		}
+        return stopwords_HashSet;
+    }
 	
 	
 	
